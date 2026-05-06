@@ -1,0 +1,6 @@
+names:
+- electrical panel
+- panel_closed
+nc: 2
+train: /Users/mohamedali/Desktop/bach-lv/data/panels_v3/augmented/train
+val:   /Users/mohamedali/Desktop/bach-lv/data/panels_v3/raw/valid/images

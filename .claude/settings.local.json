@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv augmented/train/* data/augmented/train/)",
+      "Bash(mv runs/detect/runs/detect/electrical_panels/*.png   outputs/training/v1/)",
+      "Bash(mv runs/detect/runs/detect/electrical_panels_v2/*.png outputs/training/v2/)",
+      "Bash(mv demo_results/* outputs/demo/)",
+      "Bash(.venv/bin/python src/augment.py --input_dir data/breakers/raw/train/images --output_dir data/breakers/augmented/train --multiplier 10)",
+      "Bash(.venv/bin/yolo detect *)"
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+Do a thorough exploration of the project at /Users/mohamedali/Desktop/bach-lv. I need a complete picture of:
+1. All files and directories (tree structure)
+2. Contents of every non-binary file (Python scripts, config files, YAML, text files, notebooks, etc.)
+3. Any dataset directories and their structure (just the directory layout, not individual image files)
+4. Any results, logs, or output files
+5. Any requirements, README, or documentation
+ 
+Report everything — file contents, directory structure, model training configs, dataset info. This is for a complete project audit.

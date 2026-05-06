@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Model weights (large binaries)
+models/
+runs/
+*.pt
+*.mlpackage
+
+# Generated data
+data/augmented/
+data/breakers/
+data/panels_v3/
+outputs/
+
+# Next.js
+frontend/.next/
+frontend/node_modules/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+.env

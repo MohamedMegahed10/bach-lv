@@ -1,0 +1,6 @@
+names:
+- electrical panel
+nc: 1
+train: /Users/mohamedali/Desktop/bach-lv/data/raw/train/images
+val:   /Users/mohamedali/Desktop/bach-lv/data/raw/valid/images
+test:  /Users/mohamedali/Desktop/bach-lv/data/raw/test/images

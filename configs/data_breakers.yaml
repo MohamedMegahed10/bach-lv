@@ -1,0 +1,20 @@
+names:
+- Blank
+- Circuit labels
+- Cut Out
+- Earthing arrangement
+- Electricity Meter
+- MCB
+- Main Switch
+- Mixed wiring colours sticker
+- RCBO
+- RCD
+- RCD test sticker
+- SPD
+- TP MCB
+- label
+- next inspection sticker
+- warning label
+nc: 16
+train: /Users/mohamedali/Desktop/bach-lv/data/breakers/augmented/train
+val:   /Users/mohamedali/Desktop/bach-lv/data/breakers/raw/valid/images
