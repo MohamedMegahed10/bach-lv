@@ -10,6 +10,7 @@ export default function UploadMode() {
   const { result, uploadSrc, setResult, setLoading, setError, setUploadSrc } = useScanStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ w: 1, h: 1 });
+  const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
   const [dragging, setDragging] = useState(false);
 
   useEffect(() => {
@@ -18,7 +19,28 @@ export default function UploadMode() {
     const ro = new ResizeObserver(() => setContainerSize({ w: el.offsetWidth, h: el.offsetHeight }));
     ro.observe(el);
     return () => ro.disconnect();
-  }, [uploadSrc]);
+  }, [uploadSrc]); // re-run when image appears so containerRef.current is non-null
+
+  // Use result.image_size when available (avoids race with onLoad firing after API responds)
+  const effectiveNat = result?.image_size
+    ? { w: result.image_size[0], h: result.image_size[1] }
+    : naturalSize;
+
+  // Compute the letterbox region — returns null when dims are unknown (suppress overlay)
+  const overlayRect = (() => {
+    const { w: cW, h: cH } = containerSize;
+    const { w: nW, h: nH } = effectiveNat;
+    if (!nW || !nH || cW <= 1) return null;
+    const imgAspect = nW / nH;
+    const cAspect   = cW / cH;
+    if (imgAspect > cAspect) {
+      const rH = cW / imgAspect;
+      return { left: 0, top: (cH - rH) / 2, width: cW, height: rH };
+    } else {
+      const rW = cH * imgAspect;
+      return { left: (cW - rW) / 2, top: 0, width: rW, height: cH };
+    }
+  })();
 
   const handleFile = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) return;
@@ -39,12 +61,15 @@ export default function UploadMode() {
 
     const reader = new FileReader();
     reader.onload = async (ev) => {
+      const raw = ev.target?.result as string;
+      // Show the image immediately so user sees it
+      setUploadSrc(raw);
+      setLoading(true);
+      setError(null);
       try {
-        const raw = ev.target?.result as string;
-        const jpeg = await toJpeg(raw);
-        setUploadSrc(jpeg);
-        setLoading(true);
-        setError(null);
+        // Convert to JPEG via canvas (handles HEIC and normalises format)
+        let jpeg = raw;
+        try { jpeg = await toJpeg(raw); } catch { /* keep raw if canvas fails */ }
         const data = await detect(jpeg, 0.25);
         setResult(data);
       } catch (e) {
@@ -72,18 +97,28 @@ export default function UploadMode() {
     <div className="relative w-full h-full flex items-center justify-center">
       {uploadSrc ? (
         <>
-          {/* Wrapper sized to rendered image — overlay is relative to this */}
-          <div ref={containerRef} className="relative">
+          {/* Full-panel container — image fills it with object-contain letterboxing */}
+          <div ref={containerRef} className="absolute inset-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={uploadSrc} alt="uploaded"
-              className="block max-w-full max-h-full object-contain" />
+            <img
+              src={uploadSrc}
+              alt="uploaded"
+              className="w-full h-full object-contain"
+              onLoad={(e) => {
+                const img = e.currentTarget;
+                setNaturalSize({ w: img.naturalWidth, h: img.naturalHeight });
+              }}
+            />
 
-            {result && containerSize.w > 1 && (
-              <DetectionOverlay
-                panels={result.panels}
-                imageSize={result.image_size as [number, number]}
-                containerSize={containerSize}
-              />
+            {/* Overlay positioned exactly over the rendered image pixels */}
+            {result && overlayRect && (
+              <div className="absolute pointer-events-none" style={overlayRect}>
+                <DetectionOverlay
+                  panels={result.panels}
+                  imageSize={result.image_size as [number, number]}
+                  containerSize={{ w: overlayRect.width, h: overlayRect.height }}
+                />
+              </div>
             )}
           </div>
 

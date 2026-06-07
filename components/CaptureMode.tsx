@@ -9,12 +9,11 @@ import DetectionOverlay from "./DetectionOverlay";
 import ScanReticle from "./ScanReticle";
 
 export default function CaptureMode() {
-  const { result, setResult, setLoading, setError } = useScanStore();
+  const { result, loading, setResult, setLoading, setError } = useScanStore();
   const { videoRef, ready, error, captureFrame } = useCamera();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ w: 1, h: 1 });
   const [frozen, setFrozen] = useState<string | null>(null);
-  const [analyzing, setAnalyzing] = useState(false);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -34,7 +33,6 @@ export default function CaptureMode() {
 
   const handleAnalyze = useCallback(async () => {
     if (!frozen) return;
-    setAnalyzing(true);
     setLoading(true);
     setError(null);
     try {
@@ -43,7 +41,6 @@ export default function CaptureMode() {
     } catch (e) {
       setError(e instanceof Error ? e.message : "Detection failed");
     } finally {
-      setAnalyzing(false);
       setLoading(false);
     }
   }, [frozen, setLoading, setError, setResult]);
@@ -70,14 +67,14 @@ export default function CaptureMode() {
             />
           )}
 
-          {analyzing && (
+          {loading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/40">
               <div className="w-10 h-10 rounded-full border-2 border-red-500
                               border-t-transparent animate-spin" />
             </div>
           )}
 
-          {!analyzing && !result && (
+          {!loading && !result && (
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3">
               <button onClick={handleRetake}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm

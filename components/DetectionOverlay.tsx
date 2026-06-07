@@ -74,9 +74,9 @@ export default function DetectionOverlay({ panels, imageSize, containerSize }: P
               />
             )}
 
-            {/* Top-left chip: status badge */}
+            {/* Top-left chip: status badge — stays inside the box */}
             <div
-              className="absolute -top-6 left-0 px-2 py-0.5 rounded text-[10px]
+              className="absolute top-1 left-1 px-2 py-0.5 rounded text-[10px]
                          font-bold font-mono whitespace-nowrap"
               style={{ background: color, color: "#000" }}
             >
@@ -87,9 +87,9 @@ export default function DetectionOverlay({ panels, imageSize, containerSize }: P
                 : "✓ OPEN"}
             </div>
 
-            {/* Confidence + brand */}
+            {/* Confidence + brand — stays inside the box */}
             <div
-              className="absolute -top-6 right-0 px-2 py-0.5 rounded text-[10px]
+              className="absolute top-1 right-1 px-2 py-0.5 rounded text-[10px]
                          font-mono whitespace-nowrap bg-black/70 text-slate-300"
             >
               {(panel.confidence * 100).toFixed(0)}%
@@ -98,10 +98,10 @@ export default function DetectionOverlay({ panels, imageSize, containerSize }: P
               )}
             </div>
 
-            {/* Bottom bar: breaker summary */}
+            {/* Bottom bar: breaker summary — stays inside the box */}
             {panel.breakers_total > 0 && (
               <div
-                className="absolute -bottom-6 left-0 right-0 flex justify-center"
+                className="absolute bottom-1 left-0 right-0 flex justify-center"
               >
                 <div
                   className="px-2 py-0.5 rounded text-[10px] font-mono
